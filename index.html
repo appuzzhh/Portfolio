@@ -85,7 +85,7 @@
 
   /* ---------- hero ---------- */
   .hero{
-    padding:clamp(40px,8vh,88px) 0 clamp(56px,10vh,110px);
+    padding-top:clamp(40px,8vh,88px);padding-bottom:clamp(56px,10vh,110px);
     display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,4vw,48px);
     align-items:center;
   }
@@ -234,8 +234,60 @@
     .contact-panel{grid-template-columns:1fr 1fr}
   }
 
-  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.86rem;
+  footer{border-top:1px solid var(--line);padding-top:28px;padding-bottom:28px;color:var(--muted);font-size:.86rem;
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  /* ---------- responsive polish ---------- */
+  html{-webkit-text-size-adjust:100%}
+  section,header.hero{scroll-margin-top:72px}
+  .hero-text,.hero-photo,.project-card,.meta-chip,.contact-links a{min-width:0}
+  .contact-links .sub,.meta-chip .v,.project-card p{overflow-wrap:anywhere}
+
+  @media (max-width:860px){
+    .navbar{padding:12px 0}
+    .nav-inner{display:flex;justify-content:space-between;align-items:center}
+    .nav-inner .nav-links{justify-self:stretch;align-self:auto;width:auto;left:clamp(18px,4vw,48px);right:clamp(18px,4vw,48px);box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
+    .nav-right{margin-left:auto}
+    .nav-toggle{width:44px;height:44px;cursor:pointer}
+    .nav-links a{padding:13px 16px;font-size:1rem}
+    .hero{padding-top:32px;padding-bottom:56px;gap:36px}
+    .hero-photo{justify-self:center;margin-top:0}
+    .photo-frame{width:min(300px,72vw)}
+    .section-sub{margin-bottom:28px}
+    .meta-row{display:grid;grid-template-columns:1fr 1fr}
+    .meta-chip:first-child{grid-column:1 / -1}
+    .contact-panel{gap:8px}
+  }
+
+  @media (max-width:560px){
+    .hero-actions{flex-direction:column;align-items:stretch}
+    .hero-actions .btn{justify-content:center;width:100%}
+    .hero-socials{justify-content:flex-start}
+    .meta-row{grid-template-columns:1fr}
+    .skills-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+    .skill-card{padding:20px 12px}
+    .project-card{padding:22px 20px;border-radius:16px}
+    .project-card h3{font-size:1.15rem}
+    .timeline{padding-left:22px;gap:28px}
+    .tl-item::before{left:-27px}
+    .contact-panel{border-radius:18px;padding:22px 18px}
+    .contact-links a{padding:14px 2px}
+    footer{flex-direction:column;align-items:center;text-align:center;gap:4px}
+  }
+
+  @media (max-width:360px){
+    .badge{font-size:.7rem;padding:7px 12px;letter-spacing:.03em}
+    .cta-pill{padding:10px 16px;font-size:.85rem}
+  }
+
+  @media (max-width:759px){
+    .contact-links:first-child li:last-child a{border-bottom:1px solid var(--line)}
+  }
+
+  @media (hover:none){
+    .skill-card:hover{transform:none}
+    .contact-links a:hover{padding-left:4px}
+  }
 </style>
 </head>
 <body>
@@ -252,9 +304,8 @@
     </div>
     <div class="nav-right">
       <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
-        <span aria-hidden="true">☰</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
-      <a class="cta-pill" href="mailto:abhijithvs069@gmail.com">Let's Talk</a>
     </div>
   </div>
 </nav>
@@ -411,6 +462,14 @@
     navLinks.classList.remove('open');
     navToggle.setAttribute('aria-expanded', 'false');
   }));
+  document.addEventListener('click', e => {
+    if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+      navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded','false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded','false'); }
+  });
   function onScroll(){
     navbar.classList.toggle('scrolled', window.scrollY > 8);
     let idx = 0;
