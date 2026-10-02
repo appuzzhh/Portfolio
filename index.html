@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
 <style>
   :root{
     --bg:#0A0B0F;
@@ -288,6 +289,11 @@
     .skill-card:hover{transform:none}
     .contact-links a:hover{padding-left:4px}
   }
+
+  /* ---------- scroll reveal ---------- */
+  .js .sr{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1);transition-delay:var(--d,0s)}
+  .js .sr.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.js .sr{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
@@ -470,6 +476,35 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { navLinks.classList.remove('open'); navToggle.setAttribute('aria-expanded','false'); }
   });
+  // scroll reveal (IntersectionObserver: no scroll listener, runs once per element)
+  (function(){
+    const groups = [
+      '#about .eyebrow, #about .section-title, #about .about-grid > p, #about .meta-chip',
+      '#skills .eyebrow, #skills .section-title, #skills .section-sub, #skills .skill-card',
+      '#projects .eyebrow, #projects .section-title, #projects .section-sub, #projects .project-card',
+      '#experience .eyebrow, #experience .section-title, #experience .section-sub, #experience .tl-item',
+      '#contact .eyebrow, #contact .section-title, #contact .section-sub, #contact .contact-panel'
+    ];
+    const items = document.querySelectorAll(groups.join(','));
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        const el = en.target;
+        el.classList.add('in');
+        io.unobserve(el);
+        // hand the element back to its own hover transitions once the reveal is done
+        setTimeout(() => { el.classList.remove('sr','in'); el.style.removeProperty('--d'); }, 1100);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    items.forEach(el => {
+      const sibs = [...el.parentElement.children].filter(c => c.matches('.skill-card,.project-card,.tl-item,.meta-chip'));
+      const i = sibs.indexOf(el);
+      if (i > 0) el.style.setProperty('--d', Math.min(i, 5) * 0.09 + 's');
+      el.classList.add('sr');
+      io.observe(el);
+    });
+  })();
   function onScroll(){
     navbar.classList.toggle('scrolled', window.scrollY > 8);
     let idx = 0;
