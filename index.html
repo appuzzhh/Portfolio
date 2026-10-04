@@ -508,6 +508,8 @@
     navbar.classList.toggle('scrolled', window.scrollY > 8);
     let idx = 0;
     sections.forEach((s,i) => { if (s && window.scrollY >= s.offsetTop - 120) idx = i; });
+    // contact is short, so on reaching the page bottom it should win
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) idx = sections.length - 1;
     links.forEach(l => l.classList.remove('active'));
     links[idx].classList.add('active');
   }
